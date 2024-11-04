@@ -1,7 +1,111 @@
 ﻿@page "/"
+@using System.ComponentModel.DataAnnotations
+@using SecretSanta.Web.Models
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Secret Santa / Amigo Oculto</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Secret Santa / Amigo Oculto</h1>
 
-Welcome to your new app.
+<h5 class="col-md-12">
+    Friends Number / Nº Amigos
+    <InputNumber @bind-Value="nAmigos" class="form-control col-md-6"/>
+</h5>
+
+<hr />
+<div class="col-md-12">
+    @foreach (Amigo amigo in Amigos)
+    {
+        <div class="row">
+            <span class="col-md-6">
+                <input type="text" placeholder="Nome" @bind="amigo.Nome" class="form-control col-md-6" />
+            </span>  
+            <span class="col-md-6">
+                <input type="text" placeholder="Email" @bind="amigo.Email" class="form-control col-md-6" />
+            </span>
+        </div>
+    }
+    <br />
+    <button type="submit" class="btn btn-dark" @onclick="sortear">Roll / Sortear</button>
+</div>
+
+<hr />
+
+@if(pares.Count > 0){
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Dador</th>
+                <th scope="col">Recebedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Par<Amigo> par in pares)
+            {
+                <tr scope="row">
+                    <td>@par!.Dador!.Nome</td>
+                    <td>@par!.Recebedor!.Nome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+}
+
+@code{
+    private int n_amigos = 3; // por defeito no mínimo 3
+    public List<Amigo> Amigos { get; set; } = new List<Amigo>();
+    public List<Par<Amigo>> pares { get; set; } = new List<Par<Amigo>>();
+
+    [Required]
+    public int nAmigos
+    {
+        get => n_amigos;
+        set
+        {
+            if (n_amigos != value)
+            {
+                n_amigos = value;
+                UpdateAmigos();
+            }
+        }
+    }
+
+    private void UpdateAmigos()
+    {
+        // Adjust the list size based on the input value
+        if (Amigos.Count > nAmigos)
+        {
+            Amigos.RemoveRange(nAmigos, Amigos.Count - nAmigos);
+        }
+        else
+        {
+            while (Amigos.Count < nAmigos)
+            {
+                Amigos.Add(new Amigo());
+            }
+        }
+        // Call StateHasChanged to refresh the UI after list modification
+        StateHasChanged();
+    }
+
+    private void sortear(){
+        var rnd = new Random();
+
+        var amigosMisturados = new List<Amigo>();
+        amigosMisturados = Amigos.OrderBy(_ => rnd.Next()).Select(item => new Amigo(item)).ToList();
+
+        pares.Clear();
+
+        for (int i = 0; i < amigosMisturados.Count; i++)
+        {
+            pares.Add(new Par<Amigo>()
+            {
+                Dador = amigosMisturados[i],
+                Recebedor = amigosMisturados[(i+1) % amigosMisturados.Count]
+            });
+        }
+
+    }
+
+    protected override void OnInitialized() => UpdateAmigos();
+}
