@@ -11,8 +11,8 @@ using SecretSanta.MigrationService;
 namespace SecretSanta.MigrationService.Migrations
 {
     [DbContext(typeof(SecretSantaDBContext))]
-    [Migration("20241102020010_InitMigration")]
-    partial class InitMigration
+    [Migration("20241105024653_InitMig")]
+    partial class InitMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace SecretSanta.MigrationService.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SecretSanta.MigrationService.Models.User", b =>
+            modelBuilder.Entity("SecretSanta.Models.Models.DrawEntry", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,13 +32,31 @@ namespace SecretSanta.MigrationService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("GiverEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("GiverId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("GiverName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReceiverEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("ReceiverId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ReceiverName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Entries");
                 });
 #pragma warning restore 612, 618
         }

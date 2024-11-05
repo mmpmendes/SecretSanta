@@ -7,9 +7,9 @@ var password = builder.AddParameter("password", secret: true);
 
 // https://github.com/dotnet/aspire/issues/398
 var dbserver = builder.AddPostgres("dbserver", username, password)
-    .WithPgAdmin()
-    // só no .net sdk 9
-    .WithLifetime(ContainerLifetime.Persistent);
+    .WithPgAdmin();
+// só no .net sdk 9
+//.WithLifetime(ContainerLifetime.Persistent);
 
 var db = dbserver.AddDatabase("db");
 
@@ -18,7 +18,8 @@ var migrationService = builder.AddProject<Projects.SecretSanta_MigrationService>
     .WaitFor(db);
 
 var apiService = builder.AddProject<Projects.SecretSanta_ApiService>("apiservice")
-    .WithReference(db);
+    .WithReference(db)
+    .WaitForCompletion(migrationService);
 
 builder.AddProject<Projects.SecretSanta_Web>("webfrontend")
     .WithExternalHttpEndpoints()

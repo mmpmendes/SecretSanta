@@ -39,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Par<Amigo> par in pares)
+            @foreach (ParAmigos par in pares)
             {
                 <tr scope="row">
                     <td>@par!.Dador!.Nome</td>
@@ -54,7 +54,7 @@
 @code{
     private int n_amigos = 3; // por defeito no mínimo 3
     public List<Amigo> Amigos { get; set; } = new List<Amigo>();
-    public List<Par<Amigo>> pares { get; set; } = new List<Par<Amigo>>();
+    public List<ParAmigos> pares { get; set; } = new List<ParAmigos>();
 
     [Required]
     public int nAmigos
@@ -98,7 +98,7 @@
 
         for (int i = 0; i < amigosMisturados.Count; i++)
         {
-            pares.Add(new Par<Amigo>()
+            pares.Add(new ParAmigos()
             {
                 Dador = amigosMisturados[i],
                 Recebedor = amigosMisturados[(i+1) % amigosMisturados.Count]

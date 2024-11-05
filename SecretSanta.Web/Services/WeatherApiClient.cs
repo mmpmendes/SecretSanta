@@ -1,4 +1,4 @@
-namespace SecretSanta.Web;
+namespace SecretSanta.Web.Services;
 
 public class WeatherApiClient(HttpClient httpClient)
 {

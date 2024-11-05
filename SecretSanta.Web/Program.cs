@@ -1,5 +1,5 @@
-using SecretSanta.Web;
 using SecretSanta.Web.Components;
+using SecretSanta.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

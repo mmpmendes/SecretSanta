@@ -1,3 +1,5 @@
+using SecretSanta.ApiService.Services.Email;
+using SecretSanta.ApiService.Services.Email.Settings;
 using SecretSanta.MigrationService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,18 @@ builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
+
+builder.Services.AddControllers();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
+
+if (emailSettings != null)
+{
+    builder.Services.AddSingleton(emailSettings);
+    builder.Services.AddTransient<EmailService>();
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
