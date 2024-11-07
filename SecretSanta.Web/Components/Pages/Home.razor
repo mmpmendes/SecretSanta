@@ -1,6 +1,9 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @using System.ComponentModel.DataAnnotations
 @using SecretSanta.Web.Models
+@using SecretSanta.Web.Services
+@inject LotteryApiClient lotteryApi
 
 <PageTitle>Secret Santa / Amigo Oculto</PageTitle>
 
@@ -48,10 +51,11 @@
             }
         </tbody>
     </table>
-    
+
 }
 
 @code{
+
     private int n_amigos = 3; // por defeito no mínimo 3
     public List<Amigo> Amigos { get; set; } = new List<Amigo>();
     public List<ParAmigos> pares { get; set; } = new List<ParAmigos>();
@@ -88,23 +92,9 @@
         StateHasChanged();
     }
 
-    private void sortear(){
-        var rnd = new Random();
+    private async Task sortear(){
 
-        var amigosMisturados = new List<Amigo>();
-        amigosMisturados = Amigos.OrderBy(_ => rnd.Next()).Select(item => new Amigo(item)).ToList();
-
-        pares.Clear();
-
-        for (int i = 0; i < amigosMisturados.Count; i++)
-        {
-            pares.Add(new ParAmigos()
-            {
-                Dador = amigosMisturados[i],
-                Recebedor = amigosMisturados[(i+1) % amigosMisturados.Count]
-            });
-        }
-
+        await lotteryApi.Sortear(123, Amigos);
     }
 
     protected override void OnInitialized() => UpdateAmigos();

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using SecretSanta.ApiService.DTOs;
 using SecretSanta.ApiService.Services.Email;
-using SecretSanta.Models.Models;
 
 namespace SecretSanta.ApiService.Controllers;
 [Route("api/[controller]")]
@@ -19,22 +18,21 @@ public class LotteryController(
     private readonly IMailService _mailService = mailService;
 
     [HttpPost]
-    public async Task<IResult> SaveDraw(int id, [FromBody] IEnumerable<ParAmigoDTO> model)
+    public async Task<IResult> Sortear(int id, [FromBody] IEnumerable<AmigoDTO> model)
     {
         if (model == null)
             return Results.BadRequest();
 
-        var mapped = _mapper.Map<IEnumerable<DrawEntry>>(model);
+        List<ParAmigoDTO> sorteados = SortearPares(model);
 
-        var entry = mapped.FirstOrDefault();
-
-        if (entry != null)
-            await SendSantaEmail(entry.ReceiverEmail, entry.GiverName, entry.ReceiverName, entry.ReceiverEmail);
-
-        return Results.Ok();
+        foreach (var entry in sorteados)
+        {
+            SendSantaEmail(entry.Dador.Email, entry.Dador.Nome, entry.Recebedor.Email, entry.Recebedor.Nome);
+        }
+        return Results.Ok("Emails Enviados");
     }
 
-    private async Task<IResult> SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
+    private IResult SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
     {
         try
         {
@@ -45,6 +43,27 @@ public class LotteryController(
             // Log or handle email sending failure
             Console.WriteLine($"Failed to send email: {ex.Message} - " + ex.InnerException);
         }
-        return Results.Ok("Secret Santa email sent successfully"); ;
+        return Results.Ok(); ;
+    }
+
+    private List<ParAmigoDTO> SortearPares(IEnumerable<AmigoDTO> amigos)
+    {
+        var rnd = new Random();
+
+        var amigosMisturados = new List<AmigoDTO>();
+        amigosMisturados = amigos.OrderBy(_ => rnd.Next()).Select(item => new AmigoDTO(item)).ToList();
+
+        var pares = new List<ParAmigoDTO>();
+
+        for (int i = 0; i < amigosMisturados.Count; i++)
+        {
+            pares.Add(new ParAmigoDTO()
+            {
+                Dador = amigosMisturados[i],
+                Recebedor = amigosMisturados[(i + 1) % amigosMisturados.Count]
+            });
+        }
+
+        return pares;
     }
 }
