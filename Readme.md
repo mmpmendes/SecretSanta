@@ -16,6 +16,7 @@ Simple form that allows to have as many friends as you wish, allows to setup the
 
 For it to work it's necessary to setup the appsettings.json of the ApiService
 
+```json
 "MailSettings": {
   "Host": "smtp host",
   "DefaultCredentials": false,
@@ -29,3 +30,4 @@ For it to work it's necessary to setup the appsettings.json of the ApiService
 },
 "template_path": "folder\\path\\of\\templates",
 "secret_santa_template": "SecretSantaEmailTemplate.html"
+```
