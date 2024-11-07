@@ -6,18 +6,17 @@ using SecretSanta.ApiService.DTOs;
 using SecretSanta.ApiService.Services.Email;
 using SecretSanta.Models.Models;
 
-using System.Net.Mail;
-
 namespace SecretSanta.ApiService.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class LotteryController(
     IMapper mapper,
-    EmailService emailService
+    IMailService mailService
+
     ) : ControllerBase
 {
     private readonly IMapper _mapper = mapper;
-    private readonly EmailService _emailService = emailService;
+    private readonly IMailService _mailService = mailService;
 
     [HttpPost]
     public async Task<IResult> SaveDraw(int id, [FromBody] IEnumerable<ParAmigoDTO> model)
@@ -35,16 +34,23 @@ public class LotteryController(
         return Results.Ok();
     }
 
-    private async Task<IResult> SendSantaEmail(string recipientEmail, string giverName, string receiverName, string receiverEmail)
+    [HttpGet("SendEmail")]
+    public async Task<IResult> SendEmail()
+    {
+        await SendSantaEmail("no.reply.mendes@gmail.com", "marcio", "mendez.marcio@gmail.com", "marcio");
+        return Results.Ok();
+    }
+
+    private async Task<IResult> SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
     {
         try
         {
-            await _emailService.SendSecretSantaEmailAsync(recipientEmail, giverName, receiverName, receiverEmail);
+            _mailService.SendMail(giverEmail, giverName, receiverEmail, receiverName);
         }
-        catch (SmtpException ex)
+        catch (Exception ex)
         {
             // Log or handle email sending failure
-            Console.WriteLine($"Failed to send email: {ex.Message}");
+            Console.WriteLine($"Failed to send email: {ex.Message} - " + ex.InnerException);
         }
         return Results.Ok("Secret Santa email sent successfully"); ;
     }

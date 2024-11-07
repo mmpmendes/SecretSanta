@@ -1,5 +1,4 @@
 using SecretSanta.ApiService.Services.Email;
-using SecretSanta.ApiService.Services.Email.Settings;
 using SecretSanta.MigrationService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,13 +18,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
+builder.Services.AddTransient<IMailService, MailService>();
 
-if (emailSettings != null)
-{
-    builder.Services.AddSingleton(emailSettings);
-    builder.Services.AddTransient<EmailService>();
-}
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -61,6 +56,7 @@ app.MapGet("/weatherforecast", () =>
 });
 
 app.MapDefaultEndpoints();
+app.MapControllers();
 
 app.Run();
 
