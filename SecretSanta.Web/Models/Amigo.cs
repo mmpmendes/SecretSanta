@@ -1,11 +1,17 @@
-﻿namespace SecretSanta.Web.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SecretSanta.Web.Models;
 
 public class Amigo
 {
     public Amigo() { }
 
-    public string Nome { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Nome é obrigatório")]
+    public string Nome { get; set; }
+
+    [Required(ErrorMessage = "Email é obrigatório")]
+    [EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; }
 
     public Amigo(Amigo otherAmigo)
     {

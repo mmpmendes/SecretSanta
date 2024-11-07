@@ -7,33 +7,53 @@
 
 <PageTitle>Secret Santa / Amigo Oculto</PageTitle>
 
-<h1>Secret Santa / Amigo Oculto</h1>
+<h2>Secret Santa / Amigo Oculto</h2>
 
-<h5 class="col-md-12">
-    Friends Number / Nº Amigos
-    <InputNumber @bind-Value="nAmigos" class="form-control col-md-6"/>
-</h5>
 
-<hr />
-<div class="col-md-12">
-    @foreach (Amigo amigo in Amigos)
-    {
+<div class="row">
+    <div class="col-md-12">
+
         <div class="row">
-            <span class="col-md-6">
-                <input type="text" placeholder="Nome" @bind="amigo.Nome" class="form-control col-md-6" />
-            </span>  
-            <span class="col-md-6">
-                <input type="text" placeholder="Email" @bind="amigo.Email" class="form-control col-md-6" />
-            </span>
+            <h6 class="col-md-2">Friends Number / Nº Amigos</h6>
+            <div class="col-md-8">
+                <InputNumber @bind-Value="nAmigos" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" @onclick="StepUpFriendsNumber">
+                    <i class="bi-plus-circle"></i>
+                </button>
+                <button class="btn btn-outline-dark" @onclick="StepDownFriendsNumber">
+                    <i class="bi-dash-circle" Name="DashCircle"></i>
+                </button>
+            </div>
         </div>
-    }
-    <br />
-    <button type="submit" class="btn btn-dark" @onclick="sortear">Roll / Sortear</button>
+    </div>
 </div>
-
+<hr />
+<EditForm Model="this" OnSubmit="sortear">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-md-12 block">
+        @foreach (Amigo amigo in Amigos)
+        {
+            <div class="row">
+                
+                <span class="col-md-6">
+                    <input type="text" placeholder="Nome" @bind="amigo.Nome" class="form-control col-md-6" />
+                </span>
+                <span class="col-md-6">
+                    <input type="text" placeholder="Email" @bind="amigo.Email" class="form-control col-md-6" />
+                </span>
+            </div>
+        }
+        <br />
+        <button type="submit" class="btn btn-dark">Roll / Sortear</button>
+    </div>
+</EditForm>
 <hr />
 
-@if(pares.Count > 0){
+@if (pares.Count > 0)
+{
     <table class="table">
         <thead>
             <tr>
@@ -51,51 +71,4 @@
             }
         </tbody>
     </table>
-
-}
-
-@code{
-
-    private int n_amigos = 3; // por defeito no mínimo 3
-    public List<Amigo> Amigos { get; set; } = new List<Amigo>();
-    public List<ParAmigos> pares { get; set; } = new List<ParAmigos>();
-
-    [Required]
-    public int nAmigos
-    {
-        get => n_amigos;
-        set
-        {
-            if (n_amigos != value)
-            {
-                n_amigos = value;
-                UpdateAmigos();
-            }
-        }
-    }
-
-    private void UpdateAmigos()
-    {
-        // Adjust the list size based on the input value
-        if (Amigos.Count > nAmigos)
-        {
-            Amigos.RemoveRange(nAmigos, Amigos.Count - nAmigos);
-        }
-        else
-        {
-            while (Amigos.Count < nAmigos)
-            {
-                Amigos.Add(new Amigo());
-            }
-        }
-        // Call StateHasChanged to refresh the UI after list modification
-        StateHasChanged();
-    }
-
-    private async Task sortear(){
-
-        await lotteryApi.Sortear(123, Amigos);
-    }
-
-    protected override void OnInitialized() => UpdateAmigos();
 }
