@@ -34,13 +34,6 @@ public class LotteryController(
         return Results.Ok();
     }
 
-    [HttpGet("SendEmail")]
-    public async Task<IResult> SendEmail()
-    {
-        await SendSantaEmail("no.reply.mendes@gmail.com", "marcio", "mendez.marcio@gmail.com", "marcio");
-        return Results.Ok();
-    }
-
     private async Task<IResult> SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
     {
         try
