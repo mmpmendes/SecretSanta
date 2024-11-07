@@ -10,7 +10,7 @@ Just randomizes the pairs of friends, then for each pair takes the email of the 
 
 ### Web
 
-Simple form that allows to have as many friends as you wish, allows to setup their names and emails
+Simple form that allows you to setup as many friends as you wish, allows to setup their names and emails
 
 ## Setup
 
