@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 using SecretSanta.Web.Models;
 
@@ -8,69 +9,103 @@ namespace SecretSanta.Web.Components.Pages;
 
 public partial class Home
 {
-    private int n_amigos = 3; // por defeito no mínimo 3
-    public List<Amigo> Amigos { get; set; } = new List<Amigo>();
-    public List<ParAmigos> pares { get; set; } = new List<ParAmigos>();
+    private int _nFriends = 3; // por defeito no mínimo 3
+
+
+    [SupplyParameterFromForm]
+    public List<Friend> Friends { get; set; } = [];
+    public List<PairFriends> Pairs { get; set; } = [];
 
     [Required]
-    public int nAmigos
+    public int NFriends
     {
-        get => n_amigos;
+        get => _nFriends;
         set
         {
-            if (n_amigos != value)
+            if (_nFriends != value)
             {
-                n_amigos = value;
-                UpdateAmigos();
+                _nFriends = value;
+                UpdateFriends();
             }
         }
     }
 
-    private void UpdateAmigos()
+    private CustomValidation? customValidation;
+    //private int num_index = 0;
+
+    private void UpdateFriends()
     {
         // Adjust the list size based on the input value
-        if (Amigos.Count > nAmigos)
+        if (Friends.Count > NFriends)
         {
-            Amigos.RemoveRange(nAmigos, Amigos.Count - nAmigos);
+            Friends.RemoveRange(NFriends, Friends.Count - NFriends);
         }
         else
         {
-            while (Amigos.Count < nAmigos)
+            while (Friends.Count < NFriends)
             {
-                Amigos.Add(new Amigo());
+                Friends.Add(new Friend());
             }
         }
+        //num_index = 0;
         // Call StateHasChanged to refresh the UI after list modification
         StateHasChanged();
     }
 
-
-
-    protected override void OnInitialized() => UpdateAmigos();
-    private void StepDownFriendsNumber(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+    protected override void OnInitialized()
     {
-        nAmigos--;
-        StateHasChanged();
+        customValidation = new CustomValidation();
+        UpdateFriends();
     }
-    private void StepUpFriendsNumber(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+    private void StepDownFriendsNumber(MouseEventArgs e)
     {
-        nAmigos++;
-        StateHasChanged();
-    }
-
-    private async Task sortear()
-    {
-
-        await lotteryApi.Sortear(123, Amigos);
-    }
-    private void HandleSubmit()
-    {
-        var editContext = new EditContext(Amigos);
-        if (!editContext.Validate())
+        if (NFriends > 3)
         {
-            return;
+            NFriends--;
+            StateHasChanged();
+        }
+    }
+    private void StepUpFriendsNumber(MouseEventArgs e)
+    {
+        NFriends++;
+        StateHasChanged();
+    }
+
+    private async void Sortear()
+    {
+        customValidation?.ClearErrors();
+
+        var errors = new Dictionary<string, List<string>>();
+
+        var i = 0;
+        foreach (var friend in Friends)
+        {
+            i++;
+            if (string.IsNullOrEmpty(friend!.Name))
+            {
+                errors.Add(nameof(friend.Name) + "_" + i,
+                    new() { "Amigo " + i + ": Nome é obrigatório" });
+            }
+
+            if (string.IsNullOrEmpty(friend!.Email))
+            {
+                errors.Add(nameof(friend.Email) + "_" + i,
+                    new() { "Amigo " + i + ": Email é obrigatório" });
+            }
         }
 
-        sortear();
+        if (errors.Any())
+        {
+            customValidation?.DisplayErrors(errors);
+            Console.WriteLine("errors");
+        }
+        else
+        {
+            Console.WriteLine("no errors");
+            //Logger.LogInformation("Submit called: Processing the form");
+
+            await lotteryApi.Sortear(123, Friends);
+        }
+        //this.num_index = 0;
     }
 }

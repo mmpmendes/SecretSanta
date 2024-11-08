@@ -9,14 +9,13 @@
 
 <h2>Secret Santa / Amigo Oculto</h2>
 
-
 <div class="row">
     <div class="col-md-12">
 
         <div class="row">
             <h6 class="col-md-2">Friends Number / Nº Amigos</h6>
             <div class="col-md-8">
-                <InputNumber @bind-Value="nAmigos" class="form-control" />
+                <InputNumber @bind-Value="NFriends" class="form-control" />
             </div>
             <div class="col-md-2">
                 <button class="btn btn-primary" @onclick="StepUpFriendsNumber">
@@ -30,19 +29,27 @@
     </div>
 </div>
 <hr />
-<EditForm Model="this" OnSubmit="sortear">
+<EditForm Model="Friends" FormName="sortear" OnValidSubmit="Sortear">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <CustomValidation @ref="customValidation" />
     <div class="col-md-12 block">
-        @foreach (Amigo amigo in Amigos)
+        @foreach (var item in Friends)
         {
+            @* num_index++; *@
             <div class="row">
-                
-                <span class="col-md-6">
-                    <input type="text" placeholder="Nome" @bind="amigo.Nome" class="form-control col-md-6" />
+                @* <span class="col-md-2 friend-label">
+                    <label>Friend/Amigo #@num_index</label>
+                </span> *@
+                <span class="col-md-5">
+                    <InputText placeholder="Nome"
+                               @bind-Value="item.Name" class="form-control col-md-6" />
+                    <ValidationMessage For="@(() => item.Name)" class="text-danger" />
                 </span>
-                <span class="col-md-6">
-                    <input type="text" placeholder="Email" @bind="amigo.Email" class="form-control col-md-6" />
+                <span class="col-md-5">
+                    <InputText placeholder="Email"
+                               @bind-Value="item.Email" class="form-control col-md-6" />
+                    <ValidationMessage For="@(() => item.Email)" class="text-danger" />
                 </span>
             </div>
         }
@@ -52,21 +59,21 @@
 </EditForm>
 <hr />
 
-@if (pares.Count > 0)
+@if (Pairs.Count > 0)
 {
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Dador</th>
-                <th scope="col">Recebedor</th>
+                <th scope="col">Dador / Giver</th>
+                <th scope="col">Recebedor / Receiver</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (ParAmigos par in pares)
+            @foreach (PairFriends pair in Pairs)
             {
                 <tr scope="row">
-                    <td>@par!.Dador!.Nome</td>
-                    <td>@par!.Recebedor!.Nome</td>
+                    <td>@pair!.Giver!.Name</td>
+                    <td>@pair!.Receiver!.Name</td>
                 </tr>
             }
         </tbody>

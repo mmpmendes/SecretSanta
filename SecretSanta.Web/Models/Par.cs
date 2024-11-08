@@ -1,7 +1,7 @@
 ﻿namespace SecretSanta.Web.Models;
 
-public class ParAmigos
+public class PairFriends
 {
-    public Amigo Dador { get; set; }
-    public Amigo Recebedor { get; set; }
+    public Friend Giver { get; set; }
+    public Friend Receiver { get; set; }
 }

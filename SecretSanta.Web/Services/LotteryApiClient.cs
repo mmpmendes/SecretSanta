@@ -7,7 +7,7 @@ public class LotteryApiClient(HttpClient httpClient)
     private readonly HttpClient _httpClient = httpClient;
 
 
-    public async Task Sortear(long id, List<Amigo> amigos, CancellationToken cancellationToken = default)
+    public async Task Sortear(long id, List<Friend> amigos, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PostAsJsonAsync(
             $"api/Lottery?id={id}"
