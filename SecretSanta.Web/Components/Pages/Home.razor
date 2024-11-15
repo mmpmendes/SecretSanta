@@ -36,11 +36,7 @@
     <div class="col-md-12 block">
         @foreach (var item in Friends)
         {
-            @* num_index++; *@
             <div class="row">
-                @* <span class="col-md-2 friend-label">
-                    <label>Friend/Amigo #@num_index</label>
-                </span> *@
                 <span class="col-md-5">
                     <InputText placeholder="Nome"
                                @bind-Value="item.Name" class="form-control col-md-6" />

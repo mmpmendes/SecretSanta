@@ -15,29 +15,15 @@ public class LotteryController(IMailService mailService) : ControllerBase
     {
         if (model == null)
             return Results.BadRequest();
-
+        int i = 0;
         List<PairFriendDTO> drawn = DrawPairs(model);
 
         foreach (var entry in drawn)
         {
-            Console.WriteLine("Before SendSantaEmail: " + entry.Giver.Email);
-            SendSantaEmail(entry.Giver.Email, entry.Giver.Name, entry.Receiver.Email, entry.Receiver.Name);
+            Console.WriteLine("Mail #" + (++i));
+            _mailService.SendMail(entry.Giver.Email, entry.Giver.Name, entry.Receiver.Email, entry.Receiver.Name);
         }
         return Results.Ok("Emails sent");
-    }
-
-    private IResult SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
-    {
-        try
-        {
-            _mailService.SendMail(giverEmail, giverName, receiverEmail, receiverName);
-        }
-        catch (Exception ex)
-        {
-            // Log or handle email sending failure
-            Console.WriteLine($"Failed to send email: {ex.Message} - " + ex.InnerException);
-        }
-        return Results.Ok(); ;
     }
 
     private List<PairFriendDTO> DrawPairs(IEnumerable<FriendDTO> friends)
@@ -57,7 +43,7 @@ public class LotteryController(IMailService mailService) : ControllerBase
                 Receiver = friendsShake[(i + 1) % friendsShake.Count]
             });
         }
-        Console.WriteLine(pairs);
+        Console.WriteLine("Number of pairs: #" + pairs.Count);
         return pairs;
     }
 }

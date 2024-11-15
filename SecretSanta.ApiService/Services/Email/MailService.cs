@@ -27,7 +27,7 @@ public class MailService : IMailService
             var templatepath = _config["template_path"];
             var sstemplate = _config["secret_santa_template"];
 
-            if (String.IsNullOrEmpty(templatepath) || String.IsNullOrEmpty(sstemplate))
+            if (string.IsNullOrEmpty(templatepath) || string.IsNullOrEmpty(sstemplate))
                 throw new Exception("Bad configuration for templates");
 
             string templatePath = Path.Combine(templatepath, sstemplate);
@@ -35,6 +35,7 @@ public class MailService : IMailService
             // Define placeholders and values
             var placeholders = new Dictionary<string, string>
             {
+                { "SentDate", DateTime.Now.ToShortDateString() },
                 { "GiverName", giverName },
                 { "ReceiverName", receiverName },
                 { "ReceiverEmail", receiverEmail }
@@ -60,7 +61,7 @@ public class MailService : IMailService
 
             mail.To.Add(giverEmail);
             //mail.To.Add("mendez.marcio@gmail.com");
-            client.Send(mail);
+            client.SendMailAsync(mail);
             return true;
         }
         catch (Exception ex)

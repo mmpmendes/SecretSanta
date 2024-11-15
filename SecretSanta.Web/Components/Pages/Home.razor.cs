@@ -103,7 +103,7 @@ public partial class Home
         {
             Console.WriteLine("no errors ehy");
 
-            //await lotteryApi.Draw(123, Friends);
+            await lotteryApi.Draw(123, Friends);
         }
     }
 }
