@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var cache = builder.AddRedis("cache");
+//var cache = builder.AddRedis("cache");
 
 //var username = builder.AddParameter("username", secret: true);
 //var password = builder.AddParameter("password", secret: true);
@@ -23,7 +23,7 @@ var apiService = builder.AddProject<Projects.SecretSanta_ApiService>("apiservice
 
 builder.AddProject<Projects.SecretSanta_Web>("webfrontend")
     .WithExternalHttpEndpoints()
-    .WithReference(cache)
+    //.WithReference(cache)
     .WithReference(apiService)
     .WaitFor(apiService);
 

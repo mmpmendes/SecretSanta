@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using SecretSanta.ApiService.DTOs;
 using SecretSanta.ApiService.Services.Email;
@@ -8,28 +6,24 @@ using SecretSanta.ApiService.Services.Email;
 namespace SecretSanta.ApiService.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class LotteryController(
-    IMapper mapper,
-    IMailService mailService
-
-    ) : ControllerBase
+public class LotteryController(IMailService mailService) : ControllerBase
 {
-    private readonly IMapper _mapper = mapper;
     private readonly IMailService _mailService = mailService;
 
     [HttpPost]
-    public async Task<IResult> Sortear(int id, [FromBody] IEnumerable<AmigoDTO> model)
+    public async Task<IResult> Draw(int id, [FromBody] IEnumerable<FriendDTO> model)
     {
         if (model == null)
             return Results.BadRequest();
 
-        List<ParAmigoDTO> sorteados = SortearPares(model);
+        List<PairFriendDTO> drawn = DrawPairs(model);
 
-        foreach (var entry in sorteados)
+        foreach (var entry in drawn)
         {
-            SendSantaEmail(entry.Dador.Email, entry.Dador.Nome, entry.Recebedor.Email, entry.Recebedor.Nome);
+            Console.WriteLine("Before SendSantaEmail: " + entry.Giver.Email);
+            SendSantaEmail(entry.Giver.Email, entry.Giver.Name, entry.Receiver.Email, entry.Receiver.Name);
         }
-        return Results.Ok("Emails Enviados");
+        return Results.Ok("Emails sent");
     }
 
     private IResult SendSantaEmail(string giverEmail, string giverName, string receiverEmail, string receiverName)
@@ -46,24 +40,24 @@ public class LotteryController(
         return Results.Ok(); ;
     }
 
-    private List<ParAmigoDTO> SortearPares(IEnumerable<AmigoDTO> amigos)
+    private List<PairFriendDTO> DrawPairs(IEnumerable<FriendDTO> friends)
     {
         var rnd = new Random();
 
-        var amigosMisturados = new List<AmigoDTO>();
-        amigosMisturados = amigos.OrderBy(_ => rnd.Next()).Select(item => new AmigoDTO(item)).ToList();
+        var friendsShake = new List<FriendDTO>();
+        friendsShake = friends.OrderBy(_ => rnd.Next()).Select(item => new FriendDTO(item)).ToList();
 
-        var pares = new List<ParAmigoDTO>();
+        var pairs = new List<PairFriendDTO>();
 
-        for (int i = 0; i < amigosMisturados.Count; i++)
+        for (int i = 0; i < friendsShake.Count; i++)
         {
-            pares.Add(new ParAmigoDTO()
+            pairs.Add(new PairFriendDTO()
             {
-                Dador = amigosMisturados[i],
-                Recebedor = amigosMisturados[(i + 1) % amigosMisturados.Count]
+                Giver = friendsShake[i],
+                Receiver = friendsShake[(i + 1) % friendsShake.Count]
             });
         }
-
-        return pares;
+        Console.WriteLine(pairs);
+        return pairs;
     }
 }

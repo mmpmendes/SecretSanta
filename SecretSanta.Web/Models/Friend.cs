@@ -13,9 +13,9 @@ public class Friend
     [EmailAddress(ErrorMessage = "Email inválido")]
     public string Email { get; set; } = String.Empty;
 
-    public Friend(Friend otherAmigo)
+    public Friend(Friend otherFriend)
     {
-        Name = otherAmigo.Name;
-        Email = otherAmigo.Email;
+        Name = otherFriend.Name;
+        Email = otherFriend.Email;
     }
 }

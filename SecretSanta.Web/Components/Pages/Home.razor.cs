@@ -71,7 +71,7 @@ public partial class Home
         StateHasChanged();
     }
 
-    private async void Sortear()
+    private async void Draw()
     {
         customValidation?.ClearErrors();
 
@@ -101,11 +101,9 @@ public partial class Home
         }
         else
         {
-            Console.WriteLine("no errors");
-            //Logger.LogInformation("Submit called: Processing the form");
+            Console.WriteLine("no errors ehy");
 
-            await lotteryApi.Sortear(123, Friends);
+            //await lotteryApi.Draw(123, Friends);
         }
-        //this.num_index = 0;
     }
 }

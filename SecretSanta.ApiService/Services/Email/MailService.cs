@@ -21,6 +21,7 @@ public class MailService : IMailService
 
     public bool SendMail(string giverEmail, string giverName, string receiverEmail, string receiverName)
     {
+        Console.WriteLine("SendMail: " + giverEmail);
         try
         {
             var templatepath = _config["template_path"];
@@ -33,11 +34,11 @@ public class MailService : IMailService
 
             // Define placeholders and values
             var placeholders = new Dictionary<string, string>
-        {
-            { "GiverName", giverName },
-            { "ReceiverName", receiverName },
-            { "ReceiverEmail", receiverEmail }
-        };
+            {
+                { "GiverName", giverName },
+                { "ReceiverName", receiverName },
+                { "ReceiverEmail", receiverEmail }
+            };
 
             // Load and parse the template with placeholders
             var body = LoadTemplate(templatePath, placeholders);
@@ -58,6 +59,7 @@ public class MailService : IMailService
             };
 
             mail.To.Add(giverEmail);
+            //mail.To.Add("mendez.marcio@gmail.com");
             client.Send(mail);
             return true;
         }
