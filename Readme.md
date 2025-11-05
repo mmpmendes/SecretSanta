@@ -191,7 +191,7 @@ dotnet workload install aspire
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/mmpmendes/SecretSanta.git
+git clone <repository-url>
 cd SecretSanta
 ```
 
@@ -212,13 +212,15 @@ Create or update `SecretSanta.ApiService/appsettings.json` with your SMTP config
     "UseSSL": true,
     "DefaultSubject": "🎅 Your Secret Santa Assignment"
   },
-  "template_path": "C:\\path\\to\\SecretSanta\\SecretSanta.ApiService\\Services\\Email\\EmailTemplate",
+  "template_path": "/absolute/path/to/SecretSanta/SecretSanta.ApiService/Services/Email/EmailTemplate",
   "secret_santa_template": "SecretSantaEmailTemplate.html"
 }
 ```
 
 **Important Notes:**
 - Use absolute paths for `template_path`
+- Example Windows path: `"C:\\Users\\YourName\\SecretSanta\\SecretSanta.ApiService\\Services\\Email\\EmailTemplate"`
+- Example Linux/Mac path: `"/home/yourname/SecretSanta/SecretSanta.ApiService/Services/Email/EmailTemplate"`
 - On Windows, use double backslashes (`\\`) or forward slashes (`/`)
 - On Linux/Mac, use forward slashes (`/`)
 - The template file is located at: `SecretSanta.ApiService/Services/Email/EmailTemplate/SecretSantaEmailTemplate.html`
