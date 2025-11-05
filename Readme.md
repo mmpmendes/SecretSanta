@@ -173,8 +173,7 @@ The email service uses fire-and-forget pattern:
 
 ## Prerequisites
 
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) or later
-- [.NET SDK 9.0](https://dotnet.microsoft.com/download/dotnet/9.0) (for AppHost)
+- [.NET SDK 9.0](https://dotnet.microsoft.com/download/dotnet/9.0) or later
 - [.NET Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling)
 - PostgreSQL database (optional, currently commented out in AppHost)
 - SMTP server credentials for email functionality
